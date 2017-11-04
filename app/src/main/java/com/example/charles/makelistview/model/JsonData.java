@@ -34,15 +34,32 @@ public class JsonData implements Parcelable {
 
     public final static Parcelable.Creator<JsonData> CREATOR = new Creator<JsonData>() {
         @Override
-        public JsonData createFromParcel(Parcel source) {
-            return null;
+        public JsonData createFromParcel(Parcel in) {
+            JsonData instance = new JsonData();
+            in.readList(instance.popular, Popular.class.getClassLoader());
+            in.readList(instance.data, Datum.class.getClassLoader());
+            instance.status = (int)in.readValue(int.class.getClassLoader());
+            instance.paginator = (Paginator) in.readValue(Paginator.class.getClassLoader());
+            return instance;
         }
 
         @Override
         public JsonData[] newArray(int size) {
-            return new JsonData[0];
+            return new JsonData[size];
         }
     };
+
+    public List<Popular> getPopular() {
+        return popular;
+    }
+
+    public List<Datum> getData() {
+        return data;
+    }
+
+    public void setData(List<Datum> data) {
+        this.data = data;
+    }
 
     @Override
     public int describeContents() {
@@ -51,6 +68,9 @@ public class JsonData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeList(popular);
+        dest.writeList(data);
+        dest.writeValue(status);
+        dest.writeValue(paginator);
     }
 }
